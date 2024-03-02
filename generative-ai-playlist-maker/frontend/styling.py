@@ -187,7 +187,7 @@ def display_app():
             sp = spotipy.Spotify(auth=access_token)
 
             # Set authenticated state
-            st.session_state.authenticated = True
+            st.session_state['authenticated'] = True
             st.session_state.sp = sp
     
     if "authenticated" in st.session_state:
