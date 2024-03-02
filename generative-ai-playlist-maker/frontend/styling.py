@@ -4,9 +4,7 @@ This file contains the styling elements for the Streamlit app
 
 import spotipy
 import streamlit as st
-from PIL import Image
 
-from pathlib import Path
 from api.web_api import (
     generate_auth_url,
     generate_recommendations,
@@ -36,9 +34,9 @@ def set_page_configuration():
 
     col1, col2 = st.columns([1, 3])
     
-    img_path = str(Path("casettle.png").resolve())
+    htp="https://raw.githubusercontent.com/necabotheking/generative-ai-playlist-maker/663abc707b16089e12a72f6b6c664524e4aab8a4/generative-ai-playlist-maker/img/casette.png"
     with col1:
-        st.image(img_path, width=200)
+        st.image(htp, width=200)
 
     with col2:
         st.title("INFINI∞TRACKS", anchor=False)
