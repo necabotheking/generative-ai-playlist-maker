@@ -151,6 +151,11 @@ def get_user_selections(_sp):
         parsed_user_selection = parse_user_input(user_option, _sp)
         num_songs = st.number_input("How many songs would you like?", 1, 20, value=None)
         return parsed_user_selection, num_songs
+    
+@st.cache_data()
+def get_spotify_instance(auth_manager, redirect_url):
+    access_token = get_access_token(auth_manager, redirect_url)
+    return spotipy.Spotify(auth=access_token)
 
 
 def display_app():
@@ -176,21 +181,16 @@ def display_app():
 
     st.markdown("##")
     
-    if "authenticated" not in st.session_state:
+    if 'spotify_instance' not in st.session_state:
         display_login_button(auth_url)
 
         # Handle redirect URL after authentication
         redirect_url = st.text_input("Enter the redirected URL here:")
 
         if redirect_url:
-            access_token = get_access_token(auth_manager, redirect_url)
-            sp = spotipy.Spotify(auth=access_token)
-
-            # Set authenticated state
-            st.session_state['authenticated'] = True
-            st.session_state.sp = sp
+            st.session_state['spotify_instance'] = get_spotify_instance(auth_manager, redirect_url)
     
-    if "authenticated" in st.session_state:
+    if "spotify_instance" in st.session_state:
         st.write("Let's develop your music recommendations!")
         st.markdown("##")
 
@@ -201,7 +201,7 @@ def display_app():
             placeholder="Please select a choice below...",
         )
         if user_option:
-            parsed_user_selection = parse_user_input(user_option, st.session_state.sp)
+            parsed_user_selection = parse_user_input(user_option, st.session_state['spotify_instance'])
             num_songs = st.number_input(
                 "How many songs would you like?", 1, 20, value=None
             )
@@ -212,7 +212,7 @@ def display_app():
                 st.markdown("##")
 
                 uris, names = generate_recommendations(
-                    parsed_user_selection, num_songs, st.session_state.sp
+                    parsed_user_selection, num_songs, st.session_state['spotify_instance']
                 )
 
                 for idx, name in enumerate(names):
