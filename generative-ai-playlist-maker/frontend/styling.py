@@ -153,8 +153,8 @@ def get_user_selections(_sp):
         return parsed_user_selection, num_songs
     
 @st.cache_data()
-def get_spotify_instance(auth_manager, redirect_url):
-    access_token = get_access_token(auth_manager, redirect_url)
+def get_spotify_instance(_auth_manager, _redirect_url):
+    access_token = get_access_token(_auth_manager, _redirect_url)
     return spotipy.Spotify(auth=access_token)
 
 
