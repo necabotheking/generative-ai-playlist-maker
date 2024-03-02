@@ -36,7 +36,7 @@ def generate_auth_url():
     return auth_url, auth_manager
 
 
-def get_access_token(auth_manager, redirect_url):
+def retrieve_access_token(auth_manager, redirect_url):
     """
     Retrieves the Spotify Web API access token from redirect URL
 
@@ -52,8 +52,10 @@ def get_access_token(auth_manager, redirect_url):
 
     access_token_info = auth_manager.get_access_token(parsed_code)
     access_token = access_token_info["access_token"]
+    
+    sp = spotipy.Spotify(auth_manager=auth_manager)
 
-    return access_token
+    return access_token, sp
 
 
 def get_random_genre_seed(spotipy_instance):

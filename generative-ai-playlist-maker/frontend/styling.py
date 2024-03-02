@@ -8,7 +8,7 @@ import streamlit as st
 from api.web_api import (
     generate_auth_url,
     generate_recommendations,
-    get_access_token,
+    retrieve_access_token,
     get_random_genre_seed,
 )
 
@@ -154,8 +154,8 @@ def get_user_selections(_sp):
     
 @st.cache_data()
 def get_spotify_instance(_auth_manager, _redirect_url):
-    access_token = get_access_token(_auth_manager, _redirect_url)
-    return spotipy.Spotify(auth=access_token)
+    access_token, sp = retrieve_access_token(_auth_manager, _redirect_url)
+    return sp
 
 
 def display_app():
