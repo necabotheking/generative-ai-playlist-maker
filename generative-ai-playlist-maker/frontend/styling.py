@@ -175,19 +175,22 @@ def display_app():
     )
 
     st.markdown("##")
+    
+    if "authenticated" not in st.session_state:
+        display_login_button(auth_url)
 
-    display_login_button(auth_url)
+        # Handle redirect URL after authentication
+        redirect_url = st.text_input("Enter the redirected URL here:")
 
-    st.markdown("##")
+        if redirect_url:
+            access_token = get_access_token(auth_manager, redirect_url)
+            sp = spotipy.Spotify(auth=access_token)
 
-    redirect_url = st.text_input("Enter the redirected URL here:")
-
-    st.markdown("##")
-
-    if redirect_url:
-        access_token = get_access_token(auth_manager, redirect_url)
-        sp = spotipy.Spotify(auth=access_token)
-
+            # Set authenticated state
+            st.session_state.authenticated = True
+            st.session_state.sp = sp
+    
+    if "authenticated" in st.session_state:
         st.write("Let's develop your music recommendations!")
         st.markdown("##")
 
@@ -198,7 +201,7 @@ def display_app():
             placeholder="Please select a choice below...",
         )
         if user_option:
-            parsed_user_selection = parse_user_input(user_option, sp)
+            parsed_user_selection = parse_user_input(user_option, st.session_state.sp)
             num_songs = st.number_input(
                 "How many songs would you like?", 1, 20, value=None
             )
@@ -209,26 +212,68 @@ def display_app():
                 st.markdown("##")
 
                 uris, names = generate_recommendations(
-                    parsed_user_selection, num_songs, sp
+                    parsed_user_selection, num_songs, st.session_state.sp
                 )
 
                 for idx, name in enumerate(names):
                     st.text(f"{idx + 1}. {name}")
 
-                # NOTE: The code below was meant to get user feedback to
-                # fine-tune the playlist recommendations
-
-                # thumbs_up = []
-                # thumbs_down = []
-
-                # for idx, name in enumerate(names):
-                #     feedback = st.radio(f"{idx + 1}. {name}", ('👍', '👎'))
-                #     # Feedback to adjust recommendations
-                #     if feedback == '👍':
-                #         thumbs_up.append(uris[idx])
-                #     elif feedback == '👎':
-                #         thumbs_down.append(uris[idx])
-
                 st.markdown("##")
 
                 st.text("Want to save your playlist?")
+
+
+    # st.markdown("##")
+
+    # redirect_url = st.text_input("Enter the redirected URL here:")
+
+    # st.markdown("##")
+
+    # if redirect_url:
+    #     access_token = get_access_token(auth_manager, redirect_url)
+    #     sp = spotipy.Spotify(auth=access_token)
+
+    #     st.write("Let's develop your music recommendations!")
+    #     st.markdown("##")
+
+    #     user_option = st.selectbox(
+    #         "What kind of recommendations would you like?",
+    #         ("Based on my top tracks", "Based on my top artists", "Surprise Me!"),
+    #         index=None,
+    #         placeholder="Please select a choice below...",
+    #     )
+    #     if user_option:
+    #         parsed_user_selection = parse_user_input(user_option, sp)
+    #         num_songs = st.number_input(
+    #             "How many songs would you like?", 1, 20, value=None
+    #         )
+
+    #         if num_songs:
+    #             st.text(f"Creating a playlist with {num_songs} songs!")
+
+    #             st.markdown("##")
+
+    #             uris, names = generate_recommendations(
+    #                 parsed_user_selection, num_songs, sp
+    #             )
+
+    #             for idx, name in enumerate(names):
+    #                 st.text(f"{idx + 1}. {name}")
+
+    #             # NOTE: The code below was meant to get user feedback to
+    #             # fine-tune the playlist recommendations
+
+    #             # thumbs_up = []
+    #             # thumbs_down = []
+
+    #             # for idx, name in enumerate(names):
+    #             #     feedback = st.radio(f"{idx + 1}. {name}", ('👍', '👎'))
+    #             #     # Feedback to adjust recommendations
+    #             #     if feedback == '👍':
+    #             #         thumbs_up.append(uris[idx])
+    #             #     elif feedback == '👎':
+    #             #         thumbs_down.append(uris[idx])
+
+    #             st.markdown("##")
+
+    #             st.text("Want to save your playlist?")
