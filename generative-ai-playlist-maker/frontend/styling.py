@@ -4,7 +4,9 @@ This file contains the styling elements for the Streamlit app
 
 import spotipy
 import streamlit as st
+from PIL import Image
 
+from pathlib import Path
 from api.web_api import (
     generate_auth_url,
     generate_recommendations,
@@ -33,9 +35,10 @@ def set_page_configuration():
     )
 
     col1, col2 = st.columns([1, 3])
-
+    
+    img_path = str(Path("casettle.png").resolve())
     with col1:
-        st.image("img/casette.png", width=200)
+        st.image(img_path, width=200)
 
     with col2:
         st.title("INFINI∞TRACKS", anchor=False)
