@@ -29,6 +29,7 @@ def generate_auth_url():
         client_secret=CLIENT_SECRET,
         redirect_uri=REDIRECT_URL,
         scope=SCOPE,
+        show_dialog=True
     )
 
     auth_url = auth_manager.get_authorize_url()
