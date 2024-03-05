@@ -59,7 +59,7 @@ def save_spotify_access_token_to_env(access_token):
 
     for i, line in enumerate(lines):
         if line.startswith("SPOTIFY_TOKEN"):
-            lines[i] = f"\nSPOTIFY_TOKEN={access_token}"
+            lines[i] = f"\SPOTIFY_TOKEN={access_token}"
             token_present = True
             break
 
@@ -68,16 +68,16 @@ def save_spotify_access_token_to_env(access_token):
 
     with open(file_path, "w") as f:
         f.writelines(lines)
+        
 
-
-def remove_cached_token():
+def cleanup():
     """
     Removes the local .cache file containing the user's Spotify access token
 
     Inputs: None
 
-    Returns: None, modifies .cache file
+    Returns: None, removes the developer's .cache file
     """
-    cached_path = "/generative-ai-playlist-maker/.cache"
-    if os.path.exists(cached_path):
-        os.remove(cached_path)
+    cache_file = '.cache'
+    if os.path.exists(cache_file):
+        os.remove(cache_file)

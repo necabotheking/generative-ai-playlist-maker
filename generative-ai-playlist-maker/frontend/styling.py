@@ -7,7 +7,7 @@ from api.agent import generate_response
 from api.web_api import generate_auth_url, retrieve_access_token
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_core.runnables import RunnableConfig
-from utils.functions import (remove_cached_token,
+from utils.functions import (cleanup,
                              save_spotify_access_token_to_env)
 
 
@@ -114,7 +114,8 @@ def display_app():
     Returns: None, modifies the app in-place
     """
     # Load Streamlit App Configuration functions and remove cached token
-    remove_cached_token()
+    #remove_cached_token()
+    cleanup()
     set_page_configuration()
     load_custom_styling()
 
