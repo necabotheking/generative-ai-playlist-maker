@@ -23,9 +23,9 @@ This project, "INFINI∞TRACKS," is the final project for the University of Chic
 
 To run the application locally, ensure you have the following:
 
-OPENAI_API_KEY: API key for ChatGPT integration.
-SPOTIFY_CLIENT: Spotify client ID for authentication.
-SPOTIFY_SECRET: Spotify secret key for authentication.
+OPENAI_API_KEY: API key for OpenAI integration.
+SPOTIFY_CLIENT: Spotify Client ID for authentication.
+SPOTIFY_SECRET: Spotify Secret key for authentication.
 
 1. Sign up for the Spotify Web API and OpenAI to receive api keys
 2. Create a `.env` file and insert the api keys above
@@ -37,12 +37,15 @@ SPOTIFY_SECRET: Spotify secret key for authentication.
 ![](https://github.com/necabotheking/generative-ai-playlist-maker/blob/main/readme_content/infinitracks_demo.gif)
 
 ## Status
+
 The project is finished.
 
 ## Reflection
-During development, several challenges were encountered, particularly due to the complexities and limitation associated with the development mode of apps in the Spotify Web API. Additionally, Spotify API restrictions prevented my original plan of integrating ChatGPT for personalized recommendations. 
+During development, several challenges were encountered, particularly due to the complexities and limitations associated with the development mode of apps in the Spotify Web API (e.g to have an app inm Extended quota mnode for multiple user's to utilize it, Spotify Web API data cannot be used to train AI models, and more). Thus, the Spotify API restrictions prevented my original plan of integrating ChatGPT for personalized recommendations. 
 
-During the development of INFINI∞TRACKS, I gained valuable insights into integrating AI tools into Streamlit applications and learned extensively about working with the Spotify Web API. The project provided me with hands-on experience in creating personalized Spotify experience by allowing me to "speak" directly to my Spotify data with the ReAct agent. I was able to explore the intersection of LangChain, Streamlit, and the Spotify Web API's recommendation AI to create custom tools for my ReAct agent to interact with my spotify data. Despite the twists and turns, this project was a fascinating experience and exploration of the uses of AI tools within LangChain and Spotify.
+During the development of INFINI∞TRACKS, I gained valuable insights into integrating AI tools into Streamlit applications and learned extensively about working with the Spotify Web API. The project provided me with hands-on experience in creating personalized Spotify experience by allowing me to "speak" directly to my Spotify data with the ReAct agent through custom tools that my ReAct agent dynamically chose based on prompts within INFINI∞TRACKS. 
+
+Exploring the intersection of LangChain, Streamlit, and the Spotify Web API's recommendation AI was both challenging and rewarding. Despite the twists and turns, this project was a fascinating exploration of the uses of AI tools within LangChain and Spotify. I hope to continue developing this project well after the Generative AI course as additional functionality and tools using LangChain and Streamlit are created.
 
 ## References & Inspiration
 1. [Build your own playlist generator with Spotify’s API 🎧 (in Python!)](https://medium.com/analytics-vidhya/build-your-own-playlist-generator-with-spotifys-api-in-python-ceb883938ce4) by [rob_med](https://github.com/rob-med)

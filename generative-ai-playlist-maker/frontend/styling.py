@@ -114,7 +114,6 @@ def display_app():
     Returns: None, modifies the app in-place
     """
     # Load Streamlit App Configuration functions and remove cached token
-    #remove_cached_token()
     cleanup()
     set_page_configuration()
     load_custom_styling()
@@ -156,7 +155,7 @@ def display_app():
             if num_songs:
                 st.markdown("##")
                 st.text(
-                    f"INFINITracks AI is creating your new playlist with {num_songs} songs!"
+                    f"INFINI∞TRACKS AI is creating your new playlist with {num_songs} songs!"
                 )
                 st.text("Please wait while your agent generates some tunes 🎵")
 
