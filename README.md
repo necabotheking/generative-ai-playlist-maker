@@ -41,7 +41,7 @@ SPOTIFY_SECRET: Spotify Secret key for authentication.
 The project is finished.
 
 ## Reflection
-During development, several challenges were encountered, particularly due to the complexities and limitations associated with the development mode of apps in the Spotify Web API (e.g to have an app inm Extended quota mnode for multiple user's to utilize it, Spotify Web API data cannot be used to train AI models, and more). Thus, the Spotify API restrictions prevented my original plan of integrating ChatGPT for personalized recommendations. 
+During development, several challenges were encountered, particularly due to the complexities and limitations associated with the development mode of apps in the Spotify Web API (e.g to have an app inm Extended Quota Mode for multiple user's to utilize it, Spotify Web API data cannot be used to train AI models, and more). Thus, the Spotify API restrictions prevented my original plan of integrating ChatGPT for personalized recommendations. 
 
 During the development of INFINI∞TRACKS, I gained valuable insights into integrating AI tools into Streamlit applications and learned extensively about working with the Spotify Web API. The project provided me with hands-on experience in creating personalized Spotify experience by allowing me to "speak" directly to my Spotify data with the ReAct agent through custom tools that my ReAct agent dynamically chose based on prompts within INFINI∞TRACKS. 
 
