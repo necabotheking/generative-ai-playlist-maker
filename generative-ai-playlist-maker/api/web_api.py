@@ -7,7 +7,6 @@ import random
 import spotipy
 import streamlit as st
 from spotipy.oauth2 import SpotifyOAuth
-
 from utils.constants import REDIRECT_URL, SCOPE
 from utils.functions import get_web_api_variables
 
@@ -29,7 +28,7 @@ def generate_auth_url():
         client_secret=CLIENT_SECRET,
         redirect_uri=REDIRECT_URL,
         scope=SCOPE,
-        show_dialog=True
+        show_dialog=True,
     )
 
     auth_url = auth_manager.get_authorize_url()
@@ -53,12 +52,11 @@ def retrieve_access_token(auth_manager, redirect_url):
 
     access_token_info = auth_manager.get_access_token(parsed_code)
     access_token = access_token_info["access_token"]
-    
-    sp = spotipy.Spotify(auth_manager=auth_manager)
 
-    return access_token, sp
+    return access_token
 
 
+## DEPRECIATED
 def get_random_genre_seed(spotipy_instance):
     """
     Fetch all available Spotify Genres and grab a random genre seed for the
@@ -77,6 +75,7 @@ def get_random_genre_seed(spotipy_instance):
     return random_genre
 
 
+## DEPRECIATED
 def get_user_top_artists(spotipy_instance):
     """
     Retrieves the user's top 5 artists on Spotify
@@ -94,6 +93,7 @@ def get_user_top_artists(spotipy_instance):
     return seed_artists
 
 
+## DEPRECIATED
 def get_user_top_tracks(spotipy_instance):
     """
     Retrieves the user's top 5 tracks on Spotify
@@ -111,6 +111,7 @@ def get_user_top_tracks(spotipy_instance):
     return seed_tracks
 
 
+## DEPRECIATED
 def extract_track_info(raw_track_info):
     """
     Extracts the track uri and track name from the list of recommended tracks
@@ -139,6 +140,7 @@ def extract_track_info(raw_track_info):
     return (track_uris, track_names)
 
 
+## DEPRECIATED
 def generate_song_recommendations(
     spotipy_instance, num_tracks, seed_tracks=None, seed_artists=None, seed_genres=None
 ):
@@ -168,6 +170,7 @@ def generate_song_recommendations(
     return (processed_uris, processed_names)
 
 
+## DEPRECIATED
 def generate_recommendations(user_selection, num_tracks, spotipy_instance):
     """
     Generates song recommendations based on the user's selection of the basis

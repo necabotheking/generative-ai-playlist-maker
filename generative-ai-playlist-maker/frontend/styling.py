@@ -2,15 +2,13 @@
 This file contains the styling elements for the Streamlit app
 """
 
-import spotipy
 import streamlit as st
-
-from api.web_api import (
-    generate_auth_url,
-    generate_recommendations,
-    retrieve_access_token,
-    get_random_genre_seed,
-)
+from api.agent import generate_response
+from api.web_api import generate_auth_url, retrieve_access_token
+from langchain_community.callbacks import StreamlitCallbackHandler
+from langchain_core.runnables import RunnableConfig
+from utils.functions import (remove_cached_token,
+                             save_spotify_access_token_to_env)
 
 
 def set_page_configuration():
@@ -19,22 +17,21 @@ def set_page_configuration():
 
     Inputs: None
 
-    Returns: None, modifies the Streamlit App in-place
+    Returns: None, modifies the Streamlit App in place
 
     """
     st.set_page_config(
         page_title="INFINI∞TRACKS",
         page_icon="🎙️",
         menu_items={
-            "Get Help": "https://www.google.com",
-            "Report a bug": "https://www.github.com/necabotheking",
-            "About": "Created by Aïcha",
+            "Report a bug": "https://github.com/necabotheking/generative-ai-playlist-maker",
+            "About": "INFINI∞TRACKS: Created by Aïcha",
         },
     )
 
     col1, col2 = st.columns([1, 3])
-    
-    htp="https://raw.githubusercontent.com/necabotheking/generative-ai-playlist-maker/663abc707b16089e12a72f6b6c664524e4aab8a4/generative-ai-playlist-maker/img/casette.png"
+
+    htp = "https://raw.githubusercontent.com/necabotheking/generative-ai-playlist-maker/663abc707b16089e12a72f6b6c664524e4aab8a4/generative-ai-playlist-maker/img/casette.png"
     with col1:
         st.image(htp, width=200)
 
@@ -54,7 +51,7 @@ def load_custom_styling():
         '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"/>',
         unsafe_allow_html=True,
     )
-    with open("generative-ai-playlist-maker/frontend/styles.css", "r") as f:
+    with open("./frontend/styles.css", "r") as f:
         css = f.read()
 
     st.markdown(
@@ -108,56 +105,6 @@ def display_login_button(auth_url):
     )
 
 
-def parse_user_input(selected_option, spotipy_instance):
-    """
-    Inputs:
-            selected_option (str): recommendation ption selected by the user
-            spotipy_instance (Spotify): Spotipy instance of the Spotify class
-
-    Returns:
-            string representing the option that the user selected "tracks",
-            "artist" or a random genre
-    """
-    if "tracks" in selected_option.lower():
-        return "tracks"
-    elif "artists" in selected_option.lower():
-        return "artists"
-    else:
-        genre = get_random_genre_seed(spotipy_instance)
-        return genre
-
-
-# NOTE: This function did not work as intended
-@st.cache_data(experimental_allow_widgets=True)
-def get_user_selections(_sp):
-    """
-    Function meant to be used to cache the user's selections and feedback
-
-    Input:
-        _sp (Spotify): Spotipy instances of the Spotify Class
-
-    Returns:
-        parsed_user_selection (str)
-        num_songs (int)
-
-    """
-    user_option = st.selectbox(
-        "What kind of recommendations would you like?",
-        ("Based on my top tracks", "Based on my top artists", "Surprise Me!"),
-        index=None,
-        placeholder="Please select a choice below...",
-    )
-    if user_option:
-        parsed_user_selection = parse_user_input(user_option, _sp)
-        num_songs = st.number_input("How many songs would you like?", 1, 20, value=None)
-        return parsed_user_selection, num_songs
-    
-@st.cache_data()
-def get_spotify_instance(_auth_manager, _redirect_url):
-    access_token, sp = retrieve_access_token(_auth_manager, _redirect_url)
-    return sp
-
-
 def display_app():
     """
     Main function to display and run the Streamlit app
@@ -166,8 +113,9 @@ def display_app():
 
     Returns: None, modifies the app in-place
     """
+    # Load Streamlit App Configuration functions and remove cached token
+    remove_cached_token()
     set_page_configuration()
-
     load_custom_styling()
 
     auth_url, auth_manager = generate_auth_url()
@@ -180,18 +128,17 @@ def display_app():
     )
 
     st.markdown("##")
-    
-    if 'spotify_instance' not in st.session_state:
-        display_login_button(auth_url)
 
-        # Handle redirect URL after authentication
-        redirect_url = st.text_input("Enter the redirected URL here:")
+    display_login_button(auth_url)
+    redirect_url = st.text_input("Enter the redirected URL here:")
 
-        if redirect_url:
-            st.session_state['spotify_instance'] = get_spotify_instance(auth_manager, redirect_url)
-    
-    if "spotify_instance" in st.session_state:
-        st.write("Let's develop your music recommendations!")
+    if redirect_url:
+        access_token = retrieve_access_token(auth_manager, redirect_url)
+        save_spotify_access_token_to_env(access_token)
+
+        st.write(f"Access Token Acquired and Saved!")
+        st.markdown("##")
+        st.write("Please enter your playlist preferences for the INFINI∞TRACKS AI!")
         st.markdown("##")
 
         user_option = st.selectbox(
@@ -201,79 +148,28 @@ def display_app():
             placeholder="Please select a choice below...",
         )
         if user_option:
-            parsed_user_selection = parse_user_input(user_option, st.session_state['spotify_instance'])
             num_songs = st.number_input(
                 "How many songs would you like?", 1, 20, value=None
             )
 
             if num_songs:
-                st.text(f"Creating a playlist with {num_songs} songs!")
-
                 st.markdown("##")
-
-                uris, names = generate_recommendations(
-                    parsed_user_selection, num_songs, st.session_state['spotify_instance']
+                st.text(
+                    f"INFINITracks AI is creating your new playlist with {num_songs} songs!"
                 )
-
-                for idx, name in enumerate(names):
-                    st.text(f"{idx + 1}. {name}")
+                st.text("Please wait while your agent generates some tunes 🎵")
 
                 st.markdown("##")
 
-                st.text("Want to save your playlist?")
+                output_container = st.empty()
 
+                answer_container = output_container.container().chat_message(
+                    "assistant", avatar="🦜"
+                )
+                st_callback = StreamlitCallbackHandler(answer_container)
+                cfg = RunnableConfig()
+                cfg["callbacks"] = [st_callback]
 
-    # st.markdown("##")
-
-    # redirect_url = st.text_input("Enter the redirected URL here:")
-
-    # st.markdown("##")
-
-    # if redirect_url:
-    #     access_token = get_access_token(auth_manager, redirect_url)
-    #     sp = spotipy.Spotify(auth=access_token)
-
-    #     st.write("Let's develop your music recommendations!")
-    #     st.markdown("##")
-
-    #     user_option = st.selectbox(
-    #         "What kind of recommendations would you like?",
-    #         ("Based on my top tracks", "Based on my top artists", "Surprise Me!"),
-    #         index=None,
-    #         placeholder="Please select a choice below...",
-    #     )
-    #     if user_option:
-    #         parsed_user_selection = parse_user_input(user_option, sp)
-    #         num_songs = st.number_input(
-    #             "How many songs would you like?", 1, 20, value=None
-    #         )
-
-    #         if num_songs:
-    #             st.text(f"Creating a playlist with {num_songs} songs!")
-
-    #             st.markdown("##")
-
-    #             uris, names = generate_recommendations(
-    #                 parsed_user_selection, num_songs, sp
-    #             )
-
-    #             for idx, name in enumerate(names):
-    #                 st.text(f"{idx + 1}. {name}")
-
-    #             # NOTE: The code below was meant to get user feedback to
-    #             # fine-tune the playlist recommendations
-
-    #             # thumbs_up = []
-    #             # thumbs_down = []
-
-    #             # for idx, name in enumerate(names):
-    #             #     feedback = st.radio(f"{idx + 1}. {name}", ('👍', '👎'))
-    #             #     # Feedback to adjust recommendations
-    #             #     if feedback == '👍':
-    #             #         thumbs_up.append(uris[idx])
-    #             #     elif feedback == '👎':
-    #             #         thumbs_down.append(uris[idx])
-
-    #             st.markdown("##")
-
-    #             st.text("Want to save your playlist?")
+                answer = generate_response(user_option, num_songs, cfg)
+                answer_container.write("Here is your INFINI∞TRACKS generated playlist!")
+                answer_container.write(answer["output"])
