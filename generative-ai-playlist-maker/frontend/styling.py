@@ -7,8 +7,7 @@ from api.agent import generate_response
 from api.web_api import generate_auth_url, retrieve_access_token
 from langchain_community.callbacks import StreamlitCallbackHandler
 from langchain_core.runnables import RunnableConfig
-from utils.functions import (cleanup,
-                             save_spotify_access_token_to_env)
+from utils.functions import cleanup, save_spotify_access_token_to_env
 
 
 def set_page_configuration():

@@ -68,7 +68,7 @@ def save_spotify_access_token_to_env(access_token):
 
     with open(file_path, "w") as f:
         f.writelines(lines)
-        
+
 
 def cleanup():
     """
@@ -78,6 +78,6 @@ def cleanup():
 
     Returns: None, removes the developer's .cache file
     """
-    cache_file = '.cache'
+    cache_file = ".cache"
     if os.path.exists(cache_file):
         os.remove(cache_file)
