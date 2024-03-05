@@ -34,7 +34,7 @@ SPOTIFY_SECRET: Spotify secret key for authentication.
 
 ## Demo
 
-![]("readme_content/infinitracks_demo.gif")
+![](https://github.com/necabotheking/generative-ai-playlist-maker/blob/main/readme_content/infinitracks_demo.gif)
 
 ## Status
 The project is finished.
